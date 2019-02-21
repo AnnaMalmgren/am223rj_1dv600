@@ -6,6 +6,8 @@
 */
 
 'use strict'
+const { Word } = require('./Word.js')
+
 /**
  * Class for Hangman
  * @class Hangman
@@ -16,10 +18,111 @@ class Hangman {
    * @memberof Hangman
    */
   constructor () {
-    this.message = 'Hello World'
+    this.prompts = require('prompts')
+    this.guessedLetters = []
+    this.guessesLeft = 9
+    this.wordObj = new Word()
+    this.word = ''
+    this.response = false
+    this.seperate = '\n**************************************************************\n'
+    this.quit = '.exit'
   }
-  startGame () {
-    console.log(this.message)
+  /**
+   * Starts the hangman game.
+   * @memberof Hangman
+   */
+  async startGame () {
+    this.reset()
+    const response = await this.prompts({
+      type: 'confirm',
+      name: 'value',
+      message: 'Start new round of Hangman?',
+      initial: true
+    })
+    if (response.value) {
+      this.word = this.wordObj.getWord()
+      await this.playGame()
+    } else {
+      process.exit(0)
+    }
+  }
+  /**
+   * Contains the game logic for Hangman.
+   * @memberof Hangman
+   */
+  async playGame () {
+    let letter = await this.prompts([{
+      type: 'text',
+      message: 'Enter a letter',
+      name: 'value'
+    }])
+
+    await this.checkLetterValue(letter)
+
+    let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
+Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
+    console.log(log)
+
+    this.updateStatus()
+  }
+  /**
+   *  Checks what letter the user put in and updates the game accordingly.
+   * @param {Object} letter the return Object after prompting user for letter.
+   * @memberof Hangman
+   */
+  async checkLetterValue (letter) {
+    if (letter.value === this.quit) {
+      let res = await this.prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Are you sure you want to quit?',
+        initial: false
+      })
+      this.response = res.value
+    } else if (!letter.value.match(/[A-Z]/ig)) {
+      console.log('You may only use letters a-z, try again.')
+    } else if (this.guessedLetters.includes(letter.value)) {
+      console.log(`You have already guessed "${letter.value}", try another letter.`)
+    } else if (this.word.includes(letter.value)) {
+      this.guessedLetters.push(letter.value)
+      this.nrOfRightGuesses++
+      let regex = new RegExp(`${letter.value}`, `ig`)
+      let match = null
+      while ((match = regex.exec(this.word)) !== null) {
+        this.wordObj.underScoreArr[match.index] = letter.value
+      }
+    } else {
+      this.guessedLetters.push(letter.value)
+      this.guessesLeft--
+    }
+  }
+  /**
+   * Checks if the game is won, lost or should continue.
+   * @memberof Hangman
+   */
+  updateStatus () {
+    if (this.wordObj.underScoreArr.indexOf('_') === -1) {
+      console.log(`\nYou guessed the Word "${this.word}", congratulations you win!\n${this.seperate}`)
+      this.startGame()
+    } else if (this.guessesLeft === 0) {
+      console.log(`\nGame Over\n${this.seperate}`)
+      this.startGame()
+    } else if (this.response) {
+      console.log(`\nClosing down game... OK\n${this.seperate}`)
+      this.startGame()
+    } else {
+      this.playGame()
+    }
+  }
+  /**
+   * Resets the values for instances of Hangman.
+   * @memberof Hangman
+   */
+  reset () {
+    this.response = false
+    this.guessesLeft = 9
+    this.guessedLetters = []
+    this.word = ''
   }
 }
 

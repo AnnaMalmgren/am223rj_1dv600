@@ -6,8 +6,21 @@
 */
 
 'use strict'
-
 const { Hangman } = require('./src/Hangman.js')
 const hangman = new Hangman()
 
-hangman.startGame()
+const exit = require('./lib/exit.js')
+
+exit.handleCtrlC()
+process.on('exit', () => {
+  console.log('\nShutting down app... OK\n')
+})
+
+;(async () => {
+  try {
+    console.log('Welcome to Hangman! Enjoy your Game!\n')
+    await hangman.startGame()
+  } catch (err) {
+    console.log(err.message)
+  }
+})()

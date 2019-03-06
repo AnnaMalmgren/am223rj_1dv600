@@ -17,7 +17,7 @@ class Word {
    * @memberof Word
    */
   constructor () {
-    this.words = require('../data/words.json')
+    this.words = require(process.argv.slice(2).toString() || '../data/words.json')
     this.word = ''
     this.underScoreArr = []
     this.clue = ''
@@ -27,10 +27,10 @@ class Word {
    * @returns {string} returns the word to be guessed
    * @memberof Word
    */
-  getWord () {
+  getWord (index) {
     this.word = ''
+    console.log(this.words)
     this.underScoreArr = []
-    let index = Math.floor(Math.random() * this.words.length)
     let randomWord = this.words[index]
     this.word = randomWord.word
     this.clue = randomWord.clue

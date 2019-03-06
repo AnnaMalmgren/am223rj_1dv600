@@ -8,7 +8,6 @@
 'use strict'
 const { Hangman } = require('./src/Hangman.js')
 const hangman = new Hangman()
-
 const exit = require('./lib/exit.js')
 
 exit.handleCtrlC()

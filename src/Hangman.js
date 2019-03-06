@@ -40,7 +40,8 @@ class Hangman {
       initial: true
     })
     if (response.value) {
-      this.word = this.wordObj.getWord()
+      let index = Math.floor(Math.random() * this.wordObj.words.length)
+      this.word = this.wordObj.getWord(index)
       await this.playGame()
     } else {
       process.exit(0)
@@ -57,10 +58,11 @@ class Hangman {
       name: 'value'
     }])
 
-    await this.checkLetterValue(letter)
+    await this.checkLetterValue(letter.value)
 
     let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
 Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
+
     console.log(log)
 
     this.updateStatus()
@@ -71,7 +73,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
    * @memberof Hangman
    */
   async checkLetterValue (letter) {
-    if (letter.value === this.quit) {
+    if (letter === this.quit) {
       let res = await this.prompts({
         type: 'confirm',
         name: 'value',
@@ -79,20 +81,20 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
         initial: false
       })
       this.response = res.value
-    } else if (!letter.value.match(/[A-Z]/ig)) {
+    } else if (!letter.match(/[A-Z]/ig)) {
       console.log('You may only use letters a-z, try again.')
-    } else if (this.guessedLetters.includes(letter.value)) {
-      console.log(`You have already guessed "${letter.value}", try another letter.`)
-    } else if (this.word.includes(letter.value)) {
-      this.guessedLetters.push(letter.value)
+    } else if (this.guessedLetters.includes(letter)) {
+      console.log(`You have already guessed "${letter}", try another letter.`)
+    } else if (this.word.includes(letter)) {
+      this.guessedLetters.push(letter)
       this.nrOfRightGuesses++
-      let regex = new RegExp(`${letter.value}`, `ig`)
+      let regex = new RegExp(`${letter}`, `ig`)
       let match = null
       while ((match = regex.exec(this.word)) !== null) {
-        this.wordObj.underScoreArr[match.index] = letter.value
+        this.wordObj.underScoreArr[match.index] = letter
       }
     } else {
-      this.guessedLetters.push(letter.value)
+      this.guessedLetters.push(letter)
       this.guessesLeft--
     }
   }
@@ -100,7 +102,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
    * Checks if the game is won, lost or should continue.
    * @memberof Hangman
    */
-  updateStatus () {
+  async updateStatus () {
     if (this.wordObj.underScoreArr.indexOf('_') === -1) {
       console.log(`\nYou guessed the Word "${this.word}", congratulations you win!\n${this.seperate}`)
       this.startGame()

@@ -29,7 +29,6 @@ class Word {
    */
   getWord (index) {
     this.word = ''
-    console.log(this.words)
     this.underScoreArr = []
     let randomWord = this.words[index]
     this.word = randomWord.word

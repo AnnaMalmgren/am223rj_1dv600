@@ -7,6 +7,7 @@
 
 'use strict'
 const { Word } = require('./Word.js')
+const { Prompts } = require('./Prompts.js')
 
 /**
  * Class for Hangman
@@ -18,14 +19,14 @@ class Hangman {
    * @memberof Hangman
    */
   constructor () {
-    this.prompts = require('prompts')
+    this.prompts = new Prompts()
     this.guessedLetters = []
     this.guessesLeft = 9
     this.wordObj = new Word()
     this.word = ''
-    this.response = false
     this.seperate = '\n**************************************************************\n'
     this.quit = '.exit'
+    this.response = false
   }
   /**
    * Starts the hangman game.
@@ -33,13 +34,8 @@ class Hangman {
    */
   async startGame () {
     this.reset()
-    const response = await this.prompts({
-      type: 'confirm',
-      name: 'value',
-      message: 'Start new round of Hangman?',
-      initial: true
-    })
-    if (response.value) {
+    await this.prompts.promptMenu()
+    if (this.prompts.startMenu) {
       let index = Math.floor(Math.random() * this.wordObj.words.length)
       this.word = this.wordObj.getWord(index)
       await this.playGame()
@@ -52,21 +48,19 @@ class Hangman {
    * @memberof Hangman
    */
   async playGame () {
-    let letter = await this.prompts([{
-      type: 'text',
-      message: 'Enter a letter',
-      name: 'value'
-    }])
+    await this.prompts.promptLetter()
 
-    await this.checkLetterValue(letter.value)
+    await this.checkLetterValue(this.prompts.letter)
 
     let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
-Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
+  Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
 
     console.log(log)
 
     this.updateStatus()
+    return log
   }
+
   /**
    *  Checks what letter the user put in and updates the game accordingly.
    * @param {Object} letter the return Object after prompting user for letter.
@@ -74,13 +68,8 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
    */
   async checkLetterValue (letter) {
     if (letter === this.quit) {
-      let res = await this.prompts({
-        type: 'confirm',
-        name: 'value',
-        message: 'Are you sure you want to quit?',
-        initial: false
-      })
-      this.response = res.value
+      await this.prompts.confirmQuit()
+      this.response = this.prompts.quit
     } else if (!letter.match(/[A-Z]/ig)) {
       console.log('You may only use letters a-z, try again.')
     } else if (this.guessedLetters.includes(letter)) {

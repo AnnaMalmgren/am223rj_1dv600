@@ -1,58 +1,84 @@
-
+/**
+* Module for testing class Word
+* @module ./tests/word.test.js
+* @author am223rj
+* @verion v1.0.0
+*/
+/* eslint-env jest */
 
 const { Word } = require('../src/Word.js')
 const sut = new Word()
 
+// Test method getWord
+
 test('Should return word "javascript"', () => {
+  let input = 0
   let expected = 'javascript'
-  expect(sut.getWord(0)).toBe(expected)
+  let actual = sut.getWord(input)
+  expect(actual).toBe(expected)
 })
 
 test('Should set clue to "A programming language"', () => {
-  sut.index = 0
+  let input = 0
+  sut.getWord(input)
   let expected = 'A programming language'
-  expect(sut.clue).toBe(expected)
+  let actual = sut.clue
+  expect(actual).toBe(expected)
 })
 
 test('Should return word "chrome"', () => {
+  let input = 3
   let expected = 'chrome'
-  expect(sut.getWord(3)).toBe(expected)
+  let actual = sut.getWord(input)
+  expect(actual).toBe(expected)
 })
 
 test('Should set clue to "A browser"', () => {
-  sut.index = 3
+  let input = 3
+  sut.getWord(input)
   let expected = 'A browser'
-  expect(sut.clue).toBe(expected)
+  let actual = sut.clue
+  expect(actual).toBe(expected)
 })
+
+// Tests method setupWord
 
 test('Should return an array with ten underscores', () => {
   sut.underScoreArr = []
   sut.word = 'javascript'
+
   let expected = ['_', '_', '_', '_', '_', '_', '_', '_', '_', '_']
-  expect(sut.setupWord()).toEqual(expected)
+  let actual = sut.setupWord()
+  expect(actual).toEqual(expected)
 })
 
 test('Should return an array with six underscores', () => {
   sut.underScoreArr = []
   sut.word = 'chrome'
+
   let expected = ['_', '_', '_', '_', '_', '_']
-  expect(sut.setupWord()).toEqual(expected)
+  let actual = sut.setupWord()
+  expect(actual).toEqual(expected)
 })
 
+// Tests method reset.
 test('Should reset clue to "" ', () => {
-  let expected = ''
   sut.reset()
-  expect(sut.clue).toBe(expected)
+  let expected = ''
+  let actual = sut.clue
+  expect(actual).toBe(expected)
 })
 
 test('Should reset word to "" ', () => {
-  let expected = ''
   sut.reset()
-  expect(sut.word).toBe(expected)
+  let expected = ''
+  let actual = sut.word
+  expect(actual).toBe(expected)
 })
 
 test('Should reset clue to [] ', () => {
-  let expected = []
   sut.reset()
-  expect(sut.underScoreArr).toEqual(expected)
+  let expected = []
+  let actual = sut.underScoreArr
+  expect(actual).toEqual(expected)
 })

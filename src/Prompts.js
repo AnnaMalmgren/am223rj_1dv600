@@ -22,6 +22,15 @@ class Prompts {
     this.quit = ''
   }
 
+  async promptNickName () {
+    let nickName = await this.prompts([{
+      type: 'text',
+      message: 'Enter your nickname',
+      name: 'value'
+    }])
+    return nickName.value
+  }
+
   /**
     * Prompts to enter a letter and reads the user input using package prompts.
     * @memberof Prompts

@@ -27,6 +27,20 @@ class Hangman {
     this.seperate = '\n**************************************************************\n'
     this.quit = '.exit'
     this.response = false
+    this.nickname = ''
+  }
+
+  async promptNickname () {
+    if (this.nickname === '') {
+      this.nickname = await this.prompts.promptNickName()
+      if (this.nickname) {
+        console.log(`\nWelcome ${this.nickname}!\n`)
+        return this.nickname
+      } else {
+        console.log('\nYou need to enter a nickname.\n')
+        return this.promptNickname()
+      }
+    }
   }
   /**
    * Starts the hangman game.
@@ -34,6 +48,7 @@ class Hangman {
    */
   async startGame () {
     this.reset()
+    await this.promptNickname()
     await this.prompts.promptMenu()
     if (this.prompts.startMenu) {
       let index = Math.floor(Math.random() * this.wordObj.words.length)

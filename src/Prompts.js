@@ -20,6 +20,7 @@ class Prompts {
     this.letter = ''
     this.startMenu = ''
     this.quit = ''
+    this.highScoreList = ''
   }
 
   async promptNickName () {
@@ -60,6 +61,22 @@ class Prompts {
     })
     this.startMenu = startMenu.value
     return startMenu.value
+  }
+
+  /**
+   * Prompts the user to confirm if he/she wants to see the high score.
+   * @memberof Prompts
+   * @return {boolean}
+   */
+  async promptHighScore () {
+    let highScore = await this.prompts({
+      type: 'confirm',
+      name: 'value',
+      message: 'Du you want to view the high score?',
+      initial: true
+    })
+    this.highScoreList = highScore.value
+    return highScore.value
   }
 
   /**

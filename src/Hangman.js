@@ -8,6 +8,10 @@
 'use strict'
 const { Word } = require('./Word.js')
 const { Prompts } = require('./Prompts.js')
+const { Timer } = require('./Timer.js')
+const { HighScore } = require('./HighScore.js')
+const logHangman = require('./drawHangman.js')
+const chalk = require('chalk')
 
 /**
  * Class for Hangman
@@ -20,24 +24,28 @@ class Hangman {
    */
   constructor () {
     this.prompts = new Prompts()
+    this.wordObj = new Word()
+    this.timer = new Timer()
+    this.highScore = new HighScore()
     this.guessedLetters = []
     this.guessesLeft = 9
-    this.wordObj = new Word()
     this.word = ''
     this.seperate = '\n**************************************************************\n'
     this.quit = '.exit'
     this.response = false
     this.nickname = ''
+    this.time = 0
+    this.counter = 0
   }
 
   async promptNickname () {
     if (this.nickname === '') {
       this.nickname = await this.prompts.promptNickName()
       if (this.nickname) {
-        console.log(`\nWelcome ${this.nickname}!\n`)
+        console.log(chalk.bold.green(`\nWelcome ${this.nickname}!\n`))
         return this.nickname
       } else {
-        console.log('\nYou need to enter a nickname.\n')
+        console.log(chalk.bold.red('\nYou need to enter a nickname.\n'))
         return this.promptNickname()
       }
     }
@@ -48,7 +56,9 @@ class Hangman {
    */
   async startGame () {
     this.reset()
-    await this.promptNickname()
+    if (this.nickname === '') {
+      await this.promptNickname()
+    }
     await this.prompts.promptMenu()
     if (this.prompts.startMenu) {
       let index = Math.floor(Math.random() * this.wordObj.words.length)
@@ -63,12 +73,14 @@ class Hangman {
    * @memberof Hangman
    */
   async playGame () {
+    this.timer.start()
+
     await this.prompts.promptLetter()
 
     await this.checkLetterValue(this.prompts.letter)
 
     let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
-  Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
+Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
 
     console.log(log)
 
@@ -86,9 +98,9 @@ class Hangman {
       await this.prompts.confirmQuit()
       this.response = this.prompts.quit
     } else if (!letter.match(/[A-Z]/ig)) {
-      console.log('You may only use letters a-z, try again.')
+      console.log(chalk.bold.red('You may only use letters a-z, try again.'))
     } else if (this.guessedLetters.includes(letter)) {
-      console.log(`You have already guessed "${letter}", try another letter.`)
+      console.log(chalk.bold.red(`You have already guessed "${letter}", try another letter.`))
     } else if (this.word.includes(letter)) {
       this.guessedLetters.push(letter)
       this.nrOfRightGuesses++
@@ -100,7 +112,9 @@ class Hangman {
     } else {
       this.guessedLetters.push(letter)
       this.guessesLeft--
+      this.counter++
     }
+    logHangman.drawHangman(this.counter)
   }
   /**
    * Checks if the game is won, lost or should continue.
@@ -108,13 +122,23 @@ class Hangman {
    */
   async updateStatus () {
     if (this.wordObj.underScoreArr.indexOf('_') === -1) {
-      console.log(`\nYou guessed the Word "${this.word}", congratulations you win!\n${this.seperate}`)
+      this.time = this.timer.stop()
+      console.log(chalk.bold.green(`\nYou guessed the Word "${this.word}" in ${this.time} seconds, congratulations you win!\n${this.seperate}`))
+      this.highScore.checkHighScorePoints(this.nickname, this.time)
+
+      await this.prompts.promptHighScore()
+      if (this.prompts.highScoreList) {
+        console.log(this.seperate)
+        await this.highScore.highScoreView()
+      }
       this.startGame()
     } else if (this.guessesLeft === 0) {
-      console.log(`\nGame Over\n${this.seperate}`)
+      this.timer.stop()
+      console.log(chalk.bold.red(`\nGame Over\n${this.seperate}`))
       this.startGame()
     } else if (this.response) {
-      console.log(`\nClosing down game... OK\n${this.seperate}`)
+      console.log(chalk.green(`\nClosing down game... OK\n${this.seperate}`))
+      this.timer.stop()
       this.startGame()
     } else {
       this.playGame()
@@ -129,6 +153,7 @@ class Hangman {
     this.guessesLeft = 9
     this.guessedLetters = []
     this.word = ''
+    this.counter = 0
   }
 }
 

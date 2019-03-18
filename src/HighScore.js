@@ -6,21 +6,84 @@
 */
 
 'use strict'
-const { Hangman } = require('./Hangman.js')
+const fs = require('fs')
 
 class HighScore {
   constructor () {
-    this.hangman = new Hangman()
-    this.highscoreData = (require('../data/highScore.json'))
+    this.nrOfList = 8
+    this.index = null
+    this.pointsArr = []
   }
 
-  sortHighScore () {
-    let result = []
-    this.highscoreData.map(obj => result.push(obj.guessesLeft))
-    // result.sort((a, b) => b - a)
-    result.sort()
-    return result
+  async highScoreView () {
+    await fs.readFile('./data/highScore.json', async (err, data) => {
+      if (err) {
+        console.log(err.message)
+      }
+      let json = await JSON.parse(data)
+
+      function compare (a, b) {
+        const pointsA = a.points
+        const pointsB = b.points
+        let comparison = 0
+
+        pointsA < pointsB ? comparison = 1 : comparison = -1
+
+        return comparison * -1
+      }
+      let highScore = json.sort(compare)
+      let count = 1
+      highScore.map(obj => {
+        console.log(`${count}| ${obj.name} with result ${obj.points}\n`)
+        count++
+      })
+    })
+  }
+
+  async checkHighScorePoints (nickname, time) {
+    this.pointsArr = []
+    await fs.readFile('./data/highScore.json', async (err, data) => {
+      if (err) {
+        console.log(err.message)
+      }
+      let json = await JSON.parse(data)
+      if (json.length === this.nrOfList) {
+        json.map(obj => this.pointsArr.push(parseFloat(obj.points)))
+
+        let maxPoint = Math.max(...this.pointsArr)
+        this.index = this.pointsArr.indexOf(maxPoint)
+
+        if (time < maxPoint) {
+          let highScoreObj = { 'name': nickname, 'points': time }
+          json.splice(this.index, 1)
+          json.push(highScoreObj)
+          await fs.writeFile('./data/highScore.json', JSON.stringify(json), err => {
+            if (err) {
+              console.log(err.message)
+            }
+          })
+        }
+      } else if (json.lengt < this.nrOfList) {
+        return this.updatehighScore(nickname, time)
+      }
+    })
+  }
+
+  async updatehighScore (nickname, time) {
+    await fs.readFile('./data/highScore.json', async (err, data) => {
+      if (err) {
+        console.log(err.message)
+      }
+      let json = await JSON.parse(data)
+      let highScoreObj = { 'name': nickname, 'points': time }
+      json.push(highScoreObj)
+
+      await fs.writeFile('./data/highScore.json', JSON.stringify(json), err => {
+        if (err) {
+          console.log(err.message)
+        }
+      })
+    })
   }
 }
-
 module.exports.HighScore = HighScore

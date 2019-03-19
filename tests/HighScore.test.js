@@ -18,15 +18,3 @@ test('Should return "./data/highScore.json" as sut.file', async () => {
   let actual = sut.file
   expect(actual).toEqual(expected)
 })
-
-test('Should return 1', async () => {
-  let input = (83, 45)
-  let expected = 1
-  let actual = await sut.compare(input)
-  expect(actual).toEqual(expected)
-})
-
-test('Should ', async () => {
-  let actual = await sut.highScoreView()
-  expect(actual).toEqual('')
-})

@@ -130,7 +130,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
     if (this.wordObj.underScoreArr.indexOf('_') === -1) {
       this.time = this.timer.stop()
       console.log(chalk.bold.green(`\nYou guessed the Word "${this.word}" in ${this.time} seconds, congratulations you win!\n${this.seperate}`))
-      this.highScore.checkHighScorePoints(this.nickname, this.time)
+      await this.highScore.checkHighScorePoints(this.nickname, this.time)
 
       await this.prompts.promptHighScore()
       if (this.prompts.highScoreList) {

@@ -98,7 +98,8 @@ test('Should log "You may only use letters a-z, try again."', async () => {
 test('Should log "You guessed the Word "javascript", congratulations you win!"', () => {
   outputData = ''
   console['log'] = jest.fn(storeLog)
-
+  
+  sut.highScore.file = './data/testHighScore.json'
   sut.wordObj.underScoreArr = ['j', 'a', 'v', 'a', 's', 'c', 'r', 'i', 'p', 't']
 
   sut.updateStatus()

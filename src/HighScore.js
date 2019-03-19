@@ -23,16 +23,21 @@ class HighScore {
         console.log(err.message)
       }
       let json = await JSON.parse(data)
+
       let highScore = await this.sortHighScore(json)
-      highScore.map(obj => {
-        console.log('soretd: ' + obj.name + ' + ' + obj.points)
-      })
-      let count = 1
-      highScore.map(obj => {
-        console.log(chalk.blue(`\n${count}| ${obj.name} with result ${obj.points}`))
-        count++
-      })
+      let logs = await this.logHighScore(highScore)
+      logs.map(log => console.log(chalk.blue(log)))
     })
+  }
+
+  logHighScore (highScore) {
+    let log = []
+    let count = 1
+    highScore.map(obj => {
+      log.push(`\n${count}| ${obj.name} with result ${obj.points}`)
+      count++
+    })
+    return log
   }
 
   sortHighScore (highscoreArr) {
@@ -49,6 +54,23 @@ class HighScore {
     return highscoreArr.sort(compare)
   }
 
+  updateJsonToBeSent (json, nickname, time) {
+    this.pointsArr = []
+    json.map(obj => this.pointsArr.push(parseFloat(obj.points)))
+
+    let maxPoint = Math.max(...this.pointsArr)
+    this.index = this.pointsArr.indexOf(maxPoint)
+
+    if (time < maxPoint) {
+      let highScoreObj = { 'name': nickname, 'points': time }
+      json.splice(this.index, 1)
+      json.push(highScoreObj)
+      return json
+    }
+
+    return json
+  }
+
   async checkHighScorePoints (nickname, time) {
     await fs.readFile(this.file, async (err, data) => {
       if (err) {
@@ -60,24 +82,20 @@ class HighScore {
       if (json.length < this.nrOfList) {
         await this.updatehighScore(nickname, time)
       } else {
-        this.pointsArr = []
-        json.map(obj => this.pointsArr.push(parseFloat(obj.points)))
-
-        let maxPoint = Math.max(...this.pointsArr)
-        this.index = this.pointsArr.indexOf(maxPoint)
-
-        if (time < maxPoint) {
-          let highScoreObj = { 'name': nickname, 'points': time }
-          json.splice(this.index, 1)
-          json.push(highScoreObj)
-          await fs.writeFile(this.file, JSON.stringify(json), err => {
-            if (err) {
-              console.log(err.message)
-            }
-          })
-        }
+        json = await this.updateJsonToBeSent(json, nickname, time)
+        await fs.writeFile(this.file, JSON.stringify(json), err => {
+          if (err) {
+            console.log(err.message)
+          }
+        })
       }
     })
+  }
+
+  async addAScore (json, nickname, time) {
+    let highScoreObj = { 'name': nickname, 'points': time }
+    json.push(highScoreObj)
+    return json
   }
 
   async updatehighScore (nickname, time) {
@@ -86,10 +104,8 @@ class HighScore {
         console.log(err.message)
       }
       let json = await JSON.parse(data)
-      let highScoreObj = { 'name': nickname, 'points': time }
-      json.push(highScoreObj)
-
-      await fs.writeFile(this.file, JSON.stringify(json), err => {
+      let result = await this.addAScore(json, nickname, time)
+      await fs.writeFile(this.file, JSON.stringify(result), err => {
         if (err) {
           console.log(err.message)
         }

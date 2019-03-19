@@ -6,19 +6,27 @@ class AddWords {
   constructor () {
     this.file = './data/words.json'
   }
+
+  updateWord (json, word, clue) {
+    let wordObj = { 'word': word, 'clue': clue }
+
+    if (word && clue) {
+      json.push(wordObj)
+    }
+    return json
+  }
   async addWord (word, clue) {
     await fs.readFile(this.file, async (err, data) => {
       if (err) {
         console.log(err.message)
       }
       let json = await JSON.parse(data)
-      let wordObj = { 'word': word, 'clue': clue }
-      json.push(wordObj)
+      json = this.updateWord(json, word, clue)
       await fs.writeFile(this.file, JSON.stringify(json), err => {
         if (err) {
           console.log(err.message)
         } else {
-          console.log(chalk.bold.green('Word added succesfully.'))
+          return console.log(chalk.bold.green('Word added succesfully.'))
         }
       })
     })

@@ -7,14 +7,55 @@
 /* eslint-env jest */
 
 const { HighScore } = require('../src/HighScore.js')
-const chalk = require('chalk')
 
 const sut = new HighScore()
 
-test('Should return "./data/highScore.json" as sut.file', async () => {
-  await sut.checkHighScorePoints()
+test('Should return  [{name: Kim, points: 10}, {name: Anna, points: 15 }, {name: Bella, points: 30 }]', () => {
+  let input = [{ 'name': 'Anna', 'points': 15 }, { 'name': 'Kim', 'points': 10 }, { 'name': 'Bella', 'points': 30 }]
+  let expected = [{ 'name': 'Kim', 'points': 10 }, { 'name': 'Anna', 'points': 15 }, { 'name': 'Bella', 'points': 30 }]
+  let actual = sut.sortHighScore(input)
 
-  let expected = './data/highScore.json'
-  let actual = sut.file
+  expect(actual).toEqual(expected)
+})
+
+test('Should return', async () => {
+  let input = [[{ 'name': 'Niklas', 'points': 20 }], 'Anna', 15]
+  let expected = [{ 'name': 'Niklas', 'points': 20 }, { 'name': 'Anna', 'points': 15 }]
+  let actual = await sut.addAScore(input[0], input[1], input[2])
+  expect(actual).toEqual(expected)
+})
+
+test('should return', async () => {
+  let input = [[{ 'name': 'John', 'points': 14 }, { 'name': 'Niklas', 'points': 20 },
+    { 'name': 'Harry', 'points': 38 }], 'Anna', 18]
+  await sut.updateJsonToBeSent(input[0], input[1], input[2])
+  let expected = [14, 20, 38]
+  let actual = sut.pointsArr
+  expect(actual).toEqual(expected)
+})
+
+test('should return', async () => {
+  let input = [[{ 'name': 'John', 'points': 14 }, { 'name': 'Niklas', 'points': 20 },
+    { 'name': 'Harry', 'points': 38 }, { 'name': 'Emma', 'points': 15 }], 'Anna', 18]
+  await sut.updateJsonToBeSent(input[0], input[1], input[2])
+  let expected = 2
+  let actual = sut.index
+  expect(actual).toEqual(expected)
+})
+
+test('should return', async () => {
+  let input = [[{ 'name': 'John', 'points': 14 }, { 'name': 'Niklas', 'points': 20 },
+    { 'name': 'Harry', 'points': 38 }], 'Anna', 18]
+  let expected = [ { 'name': 'John', 'points': 14 }, { 'name': 'Niklas', 'points': 20 },
+    { 'name': 'Anna', 'points': 18 }]
+  let actual = await sut.updateJsonToBeSent(input[0], input[1], input[2])
+  expect(actual).toEqual(expected)
+})
+
+test('should return', async () => {
+  let input = [{ 'name': 'John', 'points': 14 }, { 'name': 'Malin', 'points': 19 },
+    { 'name': 'Harry', 'points': 38 }]
+  let expected = ['\n1| John with result 14', '\n2| Malin with result 19', '\n3| Harry with result 38']
+  let actual = await sut.logHighScore(input)
   expect(actual).toEqual(expected)
 })

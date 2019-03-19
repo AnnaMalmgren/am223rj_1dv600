@@ -9,6 +9,7 @@
 const { Hangman } = require('./src/Hangman.js')
 const hangman = new Hangman()
 const exit = require('./lib/exit.js')
+const chalk = require('chalk')
 
 exit.handleCtrlC()
 process.on('exit', () => {
@@ -17,7 +18,7 @@ process.on('exit', () => {
 
 ;(async () => {
   try {
-    console.log('Welcome to Hangman! Enjoy your Game!\n')
+    console.log(chalk.bold.blue('Welcome to Hangman! Enjoy your Game!\n'))
     await hangman.startGame()
   } catch (err) {
     console.log(err.message)

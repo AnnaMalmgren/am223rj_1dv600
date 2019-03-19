@@ -10,6 +10,7 @@ const { Word } = require('./Word.js')
 const { Prompts } = require('./Prompts.js')
 const { Timer } = require('./Timer.js')
 const { HighScore } = require('./HighScore.js')
+const { AddWords } = require('./AddWords')
 const logHangman = require('./drawHangman.js')
 const chalk = require('chalk')
 
@@ -27,6 +28,7 @@ class Hangman {
     this.wordObj = new Word()
     this.timer = new Timer()
     this.highScore = new HighScore()
+    this.addWords = new AddWords()
     this.guessedLetters = []
     this.guessesLeft = 9
     this.word = ''
@@ -43,7 +45,6 @@ class Hangman {
       this.nickname = await this.prompts.promptNickName()
       if (this.nickname) {
         console.log(chalk.bold.green(`\nWelcome ${this.nickname}!\n`))
-        return this.nickname
       } else {
         console.log(chalk.bold.red('\nYou need to enter a nickname.\n'))
         return this.promptNickname()
@@ -57,15 +58,20 @@ class Hangman {
   async startGame () {
     this.reset()
     if (this.nickname === '') {
-      await this.promptNickname()
+      this.nickname = await this.prompts.promptNickName()
+      this.promptNickname()
     }
     await this.prompts.promptMenu()
-    if (this.prompts.startMenu) {
+    if (this.prompts.startMenu === 'Game Started') {
       let index = Math.floor(Math.random() * this.wordObj.words.length)
       this.word = this.wordObj.getWord(index)
       await this.playGame()
-    } else {
+    } else if (this.prompts.startMenu === 'Shutting down...') {
       process.exit(0)
+    } else if (this.prompts.startMenu === 'Add Word') {
+      await this.prompts.addWord()
+      await this.addWords.addWord(this.prompts.word, this.prompts.clue)
+      this.startGame()
     }
   }
   /**
@@ -130,8 +136,10 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
       if (this.prompts.highScoreList) {
         console.log(this.seperate)
         await this.highScore.highScoreView()
+        await this.startGame()
+      } else {
+        this.startGame()
       }
-      this.startGame()
     } else if (this.guessesLeft === 0) {
       this.timer.stop()
       console.log(chalk.bold.red(`\nGame Over\n${this.seperate}`))

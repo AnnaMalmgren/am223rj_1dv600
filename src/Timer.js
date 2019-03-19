@@ -24,8 +24,8 @@ class Timer {
      * @memberof Timer
      */
   start () {
-    var start = new Date().getTime()
-    var time = 0
+    let start = new Date().getTime()
+    let time = 0
 
     /**
        * Updates the time
@@ -39,7 +39,7 @@ class Timer {
         this.result += '.0'
       }
 
-      var diff = (new Date().getTime() - start) - time
+      let diff = (new Date().getTime() - start) - time
       clearInterval(this.intervalID)
       this.intervalID = setTimeout(instance.bind(this), (100 - diff))
     }

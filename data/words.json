@@ -1,6 +1,1 @@
-
-[ {"word": "javascript", "clue": "A programming language"}, 
-  {"word": "apache", "clue": "Webserver"},
-  {"word": "express", "clue": "A framework"},
-  {"word": "chrome", "clue": "A browser"}, 
-  {"word": "handlebars", "clue": "A view engine in node JS"}]
+[{"word":"javascript","clue":"A programming language"},{"word":"apache","clue":"Webserver"},{"word":"express","clue":"A framework"},{"word":"chrome","clue":"A browser"},{"word":"handlebars","clue":"A view engine in node JS"}]

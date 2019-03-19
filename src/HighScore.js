@@ -7,16 +7,18 @@
 
 'use strict'
 const fs = require('fs')
+const chalk = require('chalk')
 
 class HighScore {
   constructor () {
     this.nrOfList = 8
     this.index = null
     this.pointsArr = []
+    this.file = './data/highScore.json'
   }
 
   async highScoreView () {
-    await fs.readFile('./data/highScore.json', async (err, data) => {
+    await fs.readFile(this.file, async (err, data) => {
       if (err) {
         console.log(err.message)
       }
@@ -34,43 +36,47 @@ class HighScore {
       let highScore = json.sort(compare)
       let count = 1
       highScore.map(obj => {
-        console.log(`${count}| ${obj.name} with result ${obj.points}\n`)
+        console.log(chalk.blue(`\n${count}| ${obj.name} with result ${obj.points}`))
         count++
       })
     })
   }
 
   async checkHighScorePoints (nickname, time) {
-    this.pointsArr = []
-    await fs.readFile('./data/highScore.json', async (err, data) => {
+    await fs.readFile(this.file, async (err, data) => {
       if (err) {
         console.log(err.message)
       }
+
       let json = await JSON.parse(data)
-      if (json.length === this.nrOfList) {
-        json.map(obj => this.pointsArr.push(parseFloat(obj.points)))
 
-        let maxPoint = Math.max(...this.pointsArr)
-        this.index = this.pointsArr.indexOf(maxPoint)
+      if (json.length < this.nrOfList) {
+        await this.updatehighScore(nickname, time)
+      } else {
+        this.pointsArr = []
+        if (json.length === this.nrOfList) {
+          json.map(obj => this.pointsArr.push(parseFloat(obj.points)))
 
-        if (time < maxPoint) {
-          let highScoreObj = { 'name': nickname, 'points': time }
-          json.splice(this.index, 1)
-          json.push(highScoreObj)
-          await fs.writeFile('./data/highScore.json', JSON.stringify(json), err => {
-            if (err) {
-              console.log(err.message)
-            }
-          })
+          let maxPoint = Math.max(...this.pointsArr)
+          this.index = this.pointsArr.indexOf(maxPoint)
+
+          if (time < maxPoint) {
+            let highScoreObj = { 'name': nickname, 'points': time }
+            json.splice(this.index, 1)
+            json.push(highScoreObj)
+            await fs.writeFile(this.file, JSON.stringify(json), err => {
+              if (err) {
+                console.log(err.message)
+              }
+            })
+          }
         }
-      } else if (json.lengt < this.nrOfList) {
-        return this.updatehighScore(nickname, time)
       }
     })
   }
 
   async updatehighScore (nickname, time) {
-    await fs.readFile('./data/highScore.json', async (err, data) => {
+    await fs.readFile(this.file, async (err, data) => {
       if (err) {
         console.log(err.message)
       }
@@ -78,7 +84,7 @@ class HighScore {
       let highScoreObj = { 'name': nickname, 'points': time }
       json.push(highScoreObj)
 
-      await fs.writeFile('./data/highScore.json', JSON.stringify(json), err => {
+      await fs.writeFile(this.file, JSON.stringify(json), err => {
         if (err) {
           console.log(err.message)
         }
@@ -86,4 +92,5 @@ class HighScore {
     })
   }
 }
+
 module.exports.HighScore = HighScore

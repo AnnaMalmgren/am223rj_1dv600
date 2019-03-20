@@ -66,6 +66,7 @@ class Hangman {
     } else if (this.prompts.startMenu === 'Shutting down...') {
       process.exit(0)
     } else if (this.prompts.startMenu === 'Add Word') {
+      console.clear()
       await this.prompts.addWord()
       await this.addWords.addWord(this.prompts.word, this.prompts.clue)
       this.startGame()
@@ -84,7 +85,6 @@ class Hangman {
 
     let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
 Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
-
     console.log(log)
 
     this.updateStatus()
@@ -104,6 +104,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
     } else if (this.guessedLetters.includes(letter)) {
       console.log(chalk.bold.red(`You have already guessed "${letter}", try another letter.`))
     } else if (this.word.includes(letter)) {
+      console.clear()
       this.guessedLetters.push(letter)
       this.nrOfRightGuesses++
       let regex = new RegExp(`${letter}`, `ig`)
@@ -112,10 +113,12 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
         this.wordObj.underScoreArr[match.index] = letter
       }
     } else {
+      console.clear()
       this.guessedLetters.push(letter)
       this.guessesLeft--
       this.counter++
     }
+    console.clear()
     logHangman.drawHangman(this.counter)
   }
   /**
@@ -130,6 +133,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
 
       await this.prompts.promptHighScore()
       if (this.prompts.highScoreList) {
+        console.clear()
         console.log(this.seperate)
         await this.highScore.highScoreView()
         await this.startGame()
@@ -141,8 +145,9 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
       console.log(chalk.bold.red(`\nGame Over\n${this.seperate}`))
       this.startGame()
     } else if (this.response) {
-      console.log(chalk.green(`\nClosing down game... OK\n${this.seperate}`))
       this.timer.stop()
+      console.clear()
+      console.log(chalk.green(`\nClosing down game... OK\n${this.seperate}`))
       this.startGame()
     } else {
       this.playGame()

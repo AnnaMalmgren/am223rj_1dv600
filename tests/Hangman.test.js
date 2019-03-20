@@ -103,7 +103,7 @@ test('Should log "You guessed the Word "javascript", congratulations you win!"',
   sut.wordObj.underScoreArr = ['j', 'a', 'v', 'a', 's', 'c', 'r', 'i', 'p', 't']
 
   sut.updateStatus()
-  let expected = chalk.bold.green(`\nYou guessed the Word "javascript" in 0.0 seconds, congratulations you win!\n${sut.seperate}`)
+  let expected = chalk.bold.green(`\nYou guessed the Word "javascript", congratulations you win!\n${sut.seperate}`)
   expect(outputData).toBe(expected)
 })
 

@@ -11,10 +11,10 @@ const chalk = require('chalk')
 
 class HighScore {
   constructor () {
-    this.nrOfList = 8
+    this.nrOfList = 5
     this.index = null
     this.pointsArr = []
-    this.file = './data/highScore.json'
+    this.file = process.argv.slice(4).toString() || './data/highScore.json'
   }
 
   async highScoreView () {

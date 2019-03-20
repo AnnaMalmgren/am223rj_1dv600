@@ -4,7 +4,7 @@ const chalk = require('chalk')
 
 class AddWords {
   constructor () {
-    this.file = process.argv.slice(3).toString() || './data/words.json'
+    this.file = process.argv.slice(3, 4).toString() || './data/words.json'
   }
 
   updateWord (json, word, clue) {

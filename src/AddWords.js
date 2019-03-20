@@ -4,7 +4,7 @@ const chalk = require('chalk')
 
 class AddWords {
   constructor () {
-    this.file = './data/words.json'
+    this.file = process.argv.slice(3).toString() || './data/words.json'
   }
 
   updateWord (json, word, clue) {
@@ -26,7 +26,7 @@ class AddWords {
         if (err) {
           console.log(err.message)
         } else {
-          return console.log(chalk.bold.green('Word added succesfully.'))
+          return console.log(chalk.bold.green('\nWord added succesfully.'))
         }
       })
     })

@@ -17,7 +17,7 @@ class Word {
    * @memberof Word
    */
   constructor () {
-    this.words = require(process.argv.slice(2).toString() || '../data/words.json')
+    this.words = require(process.argv.slice(2, 3).toString() || '../data/words.json')
     this.word = ''
     this.underScoreArr = []
     this.clue = ''

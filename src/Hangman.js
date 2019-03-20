@@ -41,14 +41,12 @@ class Hangman {
   }
 
   async promptNickname () {
-    if (this.nickname === '') {
-      this.nickname = await this.prompts.promptNickName()
-      if (this.nickname) {
-        console.log(chalk.bold.green(`\nWelcome ${this.nickname}!\n`))
-      } else {
-        console.log(chalk.bold.red('\nYou need to enter a nickname.\n'))
-        return this.promptNickname()
-      }
+    this.nickname = await this.prompts.promptNickName()
+    if (this.nickname) {
+      console.log(chalk.bold.green(`\nWelcome ${this.nickname}!\n`))
+    } else {
+      console.log(chalk.bold.red('\nYou need to enter a nickname.\n'))
+      return this.promptNickname()
     }
   }
   /**
@@ -58,8 +56,7 @@ class Hangman {
   async startGame () {
     this.reset()
     if (this.nickname === '') {
-      this.nickname = await this.prompts.promptNickName()
-      this.promptNickname()
+      await this.promptNickname()
     }
     await this.prompts.promptMenu()
     if (this.prompts.startMenu === 'Game Started') {
@@ -91,7 +88,6 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
     console.log(log)
 
     this.updateStatus()
-    return log
   }
 
   /**
@@ -129,7 +125,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
   async updateStatus () {
     if (this.wordObj.underScoreArr.indexOf('_') === -1) {
       this.time = this.timer.stop()
-      console.log(chalk.bold.green(`\nYou guessed the Word "${this.word}" in ${this.time} seconds, congratulations you win!\n${this.seperate}`))
+      console.log(chalk.bold.green(`\nYou guessed the Word "${this.word}", congratulations you win!\n${this.seperate}`))
       await this.highScore.checkHighScorePoints(this.nickname, this.time)
 
       await this.prompts.promptHighScore()

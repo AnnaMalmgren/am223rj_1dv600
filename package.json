@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "node app.js",
-    "testEnv": "node app.js ../data/testword.json",
+    "testEnv": " node app.js ../data/testword.json ./data/testword.json",
     "lint": "standard | snazzy || true"
   },
   "repository": {

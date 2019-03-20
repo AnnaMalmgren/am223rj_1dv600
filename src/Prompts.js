@@ -67,7 +67,6 @@ class Prompts {
       initial: 0
     })
     this.startMenu = startMenu.value
-    console.log(startMenu.value)
     return startMenu.value
   }
 

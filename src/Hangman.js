@@ -85,6 +85,7 @@ class Hangman {
 
     let log = `\nClue: ${this.wordObj.clue}\n\n${this.wordObj.underScoreArr.join(' ')}\nGuesses left: ${this.guessesLeft}
 Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and press enter.\n`
+    logHangman.drawHangman(this.counter)
     console.log(log)
 
     this.updateStatus()
@@ -100,11 +101,16 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
       await this.prompts.confirmQuit()
       this.response = this.prompts.quit
     } else if (!letter.match(/[A-Z]/ig)) {
+      console.clear()
       console.log(chalk.bold.red('You may only use letters a-z, try again.'))
     } else if (this.guessedLetters.includes(letter)) {
+      console.clear()
       console.log(chalk.bold.red(`You have already guessed "${letter}", try another letter.`))
     } else if (this.word.includes(letter)) {
       console.clear()
+      if (letter === this.word) {
+        this.wordObj.underScoreArr = [letter]
+      }
       this.guessedLetters.push(letter)
       this.nrOfRightGuesses++
       let regex = new RegExp(`${letter}`, `ig`)
@@ -118,9 +124,8 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
       this.guessesLeft--
       this.counter++
     }
-    console.clear()
-    logHangman.drawHangman(this.counter)
   }
+
   /**
    * Checks if the game is won, lost or should continue.
    * @memberof Hangman
@@ -136,10 +141,8 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
         console.clear()
         console.log(this.seperate)
         await this.highScore.highScoreView()
-        await this.startGame()
-      } else {
-        this.startGame()
       }
+      return this.startGame()
     } else if (this.guessesLeft === 0) {
       this.timer.stop()
       console.log(chalk.bold.red(`\nGame Over\n${this.seperate}`))

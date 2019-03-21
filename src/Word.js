@@ -7,6 +7,8 @@
 
 'use strict'
 
+const path = require('path')
+
 /**
  * Class for Word
  * @class Word
@@ -17,7 +19,7 @@ class Word {
    * @memberof Word
    */
   constructor () {
-    this.words = require(process.argv.slice(2, 3).toString() || '../data/words.json')
+    this.words = require(process.argv.slice(2, 3).toString() || path.join('../data/', 'words.json'))
     this.word = ''
     this.underScoreArr = []
     this.clue = ''

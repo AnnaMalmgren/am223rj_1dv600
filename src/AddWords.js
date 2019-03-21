@@ -1,10 +1,11 @@
 'use strict'
 const fs = require('fs')
 const chalk = require('chalk')
+const path = require('path')
 
 class AddWords {
   constructor () {
-    this.file = process.argv.slice(3, 4).toString() || './data/words.json'
+    this.file = process.argv.slice(3, 4).toString() || path.join('./data', '/words.json')
   }
 
   updateWord (json, word, clue) {

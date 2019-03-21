@@ -8,13 +8,14 @@
 'use strict'
 const fs = require('fs')
 const chalk = require('chalk')
+const path = require('path')
 
 class HighScore {
   constructor () {
     this.nrOfList = 5
     this.index = null
     this.pointsArr = []
-    this.file = process.argv.slice(4).toString() || './data/highScore.json'
+    this.file = process.argv.slice(4).toString() || path.join('./data', '/highScore.json')
   }
 
   async highScoreView () {

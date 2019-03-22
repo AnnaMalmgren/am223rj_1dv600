@@ -1,8 +1,11 @@
 /**
  * Module for class Timer
- * @author Anna Malmgren (am223rj)
+ * @module ./src/Timer.js
+ * @author am223rj
  * @version 1.0.0
  */
+
+'use strict'
 
 /**
  * class for timer.

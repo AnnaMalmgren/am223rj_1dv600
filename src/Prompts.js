@@ -25,6 +25,11 @@ class Prompts {
     this.clue = ''
   }
 
+  /**
+   * Prompts the player to enter a nickname using npm module prompts.
+   * @returns {String} The nickname the user entered.
+   * @memberof Prompts
+   */
   async promptNickName () {
     let nickName = await this.prompts([{
       type: 'text',
@@ -35,7 +40,7 @@ class Prompts {
   }
 
   /**
-    * Prompts to enter a letter and reads the user input using package prompts.
+    * Prompts to enter a letter and reads the user input using npm module prompts.
     * @memberof Prompts
     * @return {string} returns the user input as a string
     */
@@ -50,9 +55,9 @@ class Prompts {
   }
 
   /**
-   * Shows main menu, prompts to confirm start new game using package prompts.
+   * Shows main menu, prompts to confirm start new game using npm module prompts.
    * @memberof Prompts
-   * @return {boolean}
+   * @return {Boolean}
    */
   async promptMenu () {
     let startMenu = await this.prompts({
@@ -71,9 +76,9 @@ class Prompts {
   }
 
   /**
-   * Prompts the user to confirm if he/she wants to see the high score.
+   * Prompts the user to confirm if he/she wants to see the high score using npm module prompts.
    * @memberof Prompts
-   * @return {boolean}
+   * @return {Boolean}
    */
   async promptHighScore () {
     let highScore = await this.prompts({
@@ -87,7 +92,7 @@ class Prompts {
   }
 
   /**
-   * Prompts to confirm quit game using package prompts.
+   * Prompts to confirm quit game using npm module prompts.
    * @memberof Prompts
    * @return {boolean}
    */
@@ -102,6 +107,10 @@ class Prompts {
     return quit.value
   }
 
+  /**
+   * Prompts user for word and clue using npm module prompts.
+   * @memberof Prompts
+   */
   async addWord () {
     let questions = [
       {

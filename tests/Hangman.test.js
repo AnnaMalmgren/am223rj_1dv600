@@ -25,14 +25,14 @@ test('sut.guessedLetters should conatin "a"', async () => {
   expect(actual).toContain(expected)
 })
 
-test('Should log "You have already guessed "a", try another letter." and "_____________"`' , async () => {
+test('Should log "You have already guessed "a", try another letter."' , async () => {
   outputData = ''
   console['log'] = jest.fn(storeLog)
   sut.counter = 0
 
   let input = 'a'
   await sut.checkLetterValue(input)
-  let expected = chalk.bold.red(`You have already guessed "a", try another letter.`) + chalk.red(`\n_____________`)
+  let expected = chalk.bold.red(`You have already guessed "a", try another letter.`)
   expect(outputData).toBe(expected)
 })
 
@@ -89,7 +89,7 @@ test('Should log "You may only use letters a-z, try again."', async () => {
 
   let input = '1'
   await sut.checkLetterValue(input)
-  let expected = chalk.bold.red('You may only use letters a-z, try again.') + chalk.red(`\n_____________`)
+  let expected = chalk.bold.red('You may only use letters a-z, try again.')
   expect(outputData).toBe(expected)
 })
 
@@ -99,7 +99,7 @@ test('Should log "You guessed the Word "javascript", congratulations you win!"',
   outputData = ''
   console['log'] = jest.fn(storeLog)
   
-  sut.highScore.file = './data/testHighScore.json'
+  sut.highScore.file = './data/testFiles/test.json'
   sut.wordObj.underScoreArr = ['j', 'a', 'v', 'a', 's', 'c', 'r', 'i', 'p', 't']
 
   sut.updateStatus()

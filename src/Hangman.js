@@ -64,6 +64,7 @@ class Hangman {
       this.word = this.wordObj.getWord(index)
       await this.playGame()
     } else if (this.prompts.startMenu === 'Shutting down...') {
+      console.log('Shutting down app... OK')
       process.exit(0)
     } else if (this.prompts.startMenu === 'Add Word') {
       console.clear()
@@ -142,6 +143,7 @@ Guessed Letters: ${this.guessedLetters}\nTo terminate write ${this.quit} and pre
         console.log(this.seperate)
         await this.highScore.highScoreView()
       }
+      console.clear()
       return this.startGame()
     } else if (this.guessesLeft === 0) {
       this.timer.stop()

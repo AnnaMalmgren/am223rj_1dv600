@@ -9,7 +9,9 @@ This application is a version of the game hangman. It is a console application c
 
 The aplication is tested in visual studio code, the git bash terminal and windows command prompt.
 
-## instructions 
+Guess word using lowercase letters. If you want to quit while playin write .exit and press enter.
+
+## instructions install and start application.
 
 - Clone github repository
 
@@ -17,4 +19,3 @@ The aplication is tested in visual studio code, the git bash terminal and window
 
 - Start application: node app.js
 
-- force termination: Ctrl c

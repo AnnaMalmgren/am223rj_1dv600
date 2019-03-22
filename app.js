@@ -8,13 +8,7 @@
 'use strict'
 const { Hangman } = require('./src/Hangman.js')
 const hangman = new Hangman()
-const exit = require('./lib/exit.js')
 const chalk = require('chalk')
-
-exit.handleCtrlC()
-process.on('exit', () => {
-  console.log('\nShutting down app... OK\n')
-})
 
 ;(async () => {
   try {
